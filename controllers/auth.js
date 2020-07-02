@@ -3,6 +3,8 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
+const normalize = require('normalize-url');
+const gravatar = require('gravatar');
 
 // @desc  Register User
 // route  POST /api/v1/auth/register
@@ -11,13 +13,24 @@ const sendEmail = require('../utils/sendEmail');
 exports.register = asyncHandler(async (req, res, next) => {
 	const { email, password, name } = req.body;
 
+	const avatar = normalize(
+		gravatar.url(email, {
+			s: '200',
+			r: 'pg',
+			d: 'mm',
+		}),
+		{ forceHttps: true }
+	);
+
 	//Add user
 	const user = await User.create({
 		email,
 		name,
 		email,
 		password,
+		avatar,
 	});
+
 	sendTokenResponse(user, 200, res);
 });
 

@@ -21,6 +21,12 @@ const errorHandler = (err, req, res, next) => {
 		error = new ErrorResponse(message, 400);
 	}
 
+	// Authorization erroe
+	if (err.name === 'Request failed with status code 401') {
+		const message = 'Make sure you are authenticated/enter the correct apiKey';
+		error = new ErrorResponse(message, 400);
+	}
+
 	// MONGOOSE VALIDATIONERROR
 
 	if (err.name === 'ValidationError') {
